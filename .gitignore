@@ -24,3 +24,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# 4) 本地参考文档（不随仓库上传）
+/蒸馏方法参考.md
