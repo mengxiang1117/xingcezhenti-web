@@ -15,6 +15,7 @@
 !/config-example.yaml
 !/xingce_solver.py
 !/README.md
+!/蒸馏方法参考.md
 !/xingcezhenti-web.exe
 
 # 3) 任意层级都要忽略的临时/生成文件（防止混进题库子目录里）
@@ -24,6 +25,3 @@ __pycache__/
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# 4) 本地参考文档（不随仓库上传）
-/蒸馏方法参考.md
