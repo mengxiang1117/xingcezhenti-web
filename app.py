@@ -199,6 +199,7 @@ def parse_file(md_path):
             "stem_html": rewrite_img("\n".join(stem_lines).strip()),
             "options": options,
             "answer": ans_letters or (answer or ""),
+            "answer_type": "multiple" if len(ans_letters) >= 2 else "single",
             "official_analysis_html": rewrite_img("\n".join(analysis_lines).strip()),
             "material_no": material["no"] if material else 0,
             "material_html": material["html"] if material else "",
@@ -583,6 +584,7 @@ def api_question(qid: str):
         "qid": q["qid"], "module": q["module"], "module_name": q["module_name"],
         "category": q["category"], "paper": q["paper"],
         "stem_html": q["stem_html"], "options": q["options"],
+        "answer_type": q.get("answer_type", "single"),
         "has_material": bool(q.get("material_key")),
         "material_key": q.get("material_key", ""),
     }
@@ -636,7 +638,8 @@ def api_material(qid: str):
             continue
         material_html = material_html or fq.get("material_html", "")
         qs.append({"qid": fq["qid"], "category": fq["category"],
-                   "stem_html": fq["stem_html"], "options": fq["options"]})
+                   "stem_html": fq["stem_html"], "options": fq["options"],
+                   "answer_type": fq.get("answer_type", "single")})
     return {
         "material_key": key,
         "material_no": meta.get("material_no", 0),
@@ -776,6 +779,7 @@ def api_exam(exam_id: str):
         item = {
             "qid": q["qid"], "section": qq["section"], "order": qq["order"],
             "module_name": q["module_name"], "category": q["category"],
+            "answer_type": q.get("answer_type", "single"),
             "stem_html": q["stem_html"], "options": q["options"],
             "material_key": q.get("material_key", ""),
             "material_no": q.get("material_no", 0),

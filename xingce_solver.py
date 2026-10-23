@@ -192,6 +192,9 @@ def extract_question(md_path, qid=None):
     stem = "\n".join(stem_lines).strip()
     stem = re.sub(r"\n{3,}", "\n\n", stem)
 
+    ref_letters = set(re.findall(r"[A-Z]", (ref_answer or "").upper()))
+    answer_type = "multiple" if len(ref_letters) >= 2 else "single"
+
     return {
         "qid": cur_qid,
         "category": category,
@@ -200,6 +203,7 @@ def extract_question(md_path, qid=None):
         "options": options,
         "images": images,
         "ref_answer": ref_answer,
+        "answer_type": answer_type,
     }
 
 
@@ -208,6 +212,10 @@ def format_question_text(q):
     parts = []
     if q.get("category"):
         parts.append(f"【题型】{q['category']}")
+    if q.get("answer_type") == "multiple":
+        parts.append("【作答方式】多选题：请选出所有正确选项的字母")
+    elif q.get("answer_type") == "single":
+        parts.append("【作答方式】单选题：请选出唯一正确选项的字母")
     if q.get("material"):
         parts.append("【材料】")
         parts.append(q["material"])

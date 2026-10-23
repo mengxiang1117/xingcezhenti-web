@@ -325,20 +325,21 @@ function makeQuestionBlock(q, opts){
   const block = document.createElement("div");
   block.className = "qblock";
   block.id = "q-" + q.qid;
+  const multi = q.answer_type === 'multiple';
   const saved = progress[q.qid];
-  let picked = saved ? saved.choice : null;
+  let picked = saved ? (saved.choice || '') : '';
   let submitted = !!saved;
 
   function draw(res){
     const letters = Object.keys(q.options).sort();
     const optsHtml = letters.map(k=>{
       let cls="opt";
-      if(picked===k) cls+=" sel";
+      if(picked.includes(k)) cls+=" sel";
       if(res){ if((res.answer||'').includes(k)) cls+=" correct";
-               else if(picked===k) cls+=" wrong"; }
+               else if(picked.includes(k)) cls+=" wrong"; }
       return `<div class="${cls}" data-k="${k}"><span class="k">${k}</span><span>${q.options[k]||''}</span></div>`;
     }).join("");
-    const metaHtml = opts.meta?`<div class="meta">qid ${q.qid} · ${q.category||''}</div>`:"";
+    const metaHtml = opts.meta?`<div class="meta">qid ${q.qid} · ${q.category||''}${answerTypeBadge(q)}</div>`:"";
     const stemHtml = `<div class="stem">${q.stem_html||''}</div>`;
     const restHtml = (optsHtml || '<div class="tag">（本题无显式选项）</div>') +
       `<div class="actions"></div><div class="panels"></div>`;
@@ -350,8 +351,17 @@ function makeQuestionBlock(q, opts){
       block.innerHTML = metaHtml + stemHtml + restHtml;
     }
     if(!submitted){
-      block.querySelectorAll(".opt").forEach(o=>o.onclick=()=>{ picked=o.dataset.k;
-        block.querySelectorAll(".opt").forEach(x=>x.classList.toggle("sel", x.dataset.k===picked)); });
+      block.querySelectorAll(".opt").forEach(o=>o.onclick=()=>{
+        const k = o.dataset.k;
+        if(multi){
+          const set = new Set(picked.split('').filter(Boolean));
+          if(set.has(k)) set.delete(k); else set.add(k);
+          picked = [...set].sort().join('');
+        }else{
+          picked = k;
+        }
+        block.querySelectorAll(".opt").forEach(x=>x.classList.toggle("sel", picked.includes(x.dataset.k)));
+      });
     }
     drawActions(res);
   }
@@ -441,7 +451,7 @@ function makeQuestionBlock(q, opts){
   }
 
   async function submit(){
-    if(!picked){showAlert("提示", "请先选择一个选项");return;}
+    if(!picked){showAlert("提示", multi ? "请至少选择一个选项" : "请选择一个选项");return;}
     const res = await jpost("/api/submit", {qid:q.qid, choice:picked});
     submitted=true; progress[q.qid]={choice:picked, correct:res.correct}; // 服务端已落盘
     draw(res);
@@ -567,7 +577,7 @@ async function openQ(qid){
     const right=document.createElement("div"); right.className="q-pane";
 
     const meta=document.createElement("div"); meta.className="meta";
-    meta.innerHTML = `qid ${q.qid} · ${q.module_name} / ${q.category} · ${q.paper}`;
+    meta.innerHTML = `qid ${q.qid} · ${q.module_name} / ${q.category} · ${q.paper}${answerTypeBadge(q)}`;
     left.appendChild(meta);
     const stemhost=document.createElement("div"); left.appendChild(stemhost);
 
@@ -584,6 +594,14 @@ async function openQ(qid){
 }
 
 function escapeHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function answerTypeBadge(q){
+  const multi = (q && q.answer_type) === 'multiple';
+  if(multi){
+    return `<span style="display:inline-block;margin-left:6px;padding:1px 7px;background:#dc2626;color:#fff;border-radius:4px;font-weight:700;font-size:12px;vertical-align:middle">多选</span>`;
+  }
+  return `<span style="display:inline-block;margin-left:6px;padding:1px 7px;border:1px solid #dc2626;color:#dc2626;border-radius:4px;font-weight:700;font-size:12px;vertical-align:middle">单选</span>`;
+}
 
 // 渲染 AI 解析：Markdown + LaTeX 公式。先把数学片段抽出保护，避免被 markdown 转义。
 function renderAnalysis(el, text){
@@ -711,7 +729,7 @@ function renderExam(){
 
   // 左栏：有材料放「材料」，无材料放「题干」
   const left = document.createElement("div"); left.className = "mat-pane";
-  left.innerHTML = `<div class="meta">${q.module_name} / ${q.category} · qid ${q.qid}</div>` +
+  left.innerHTML = `<div class="meta">${q.module_name} / ${q.category} · qid ${q.qid}${answerTypeBadge(q)}</div>` +
     (hasMat
       ? `<div class="material"><h3>📄 材料</h3><div class="ana">${q.material_html}</div></div>`
       : `<div class="stem">${q.stem_html}</div>`);
