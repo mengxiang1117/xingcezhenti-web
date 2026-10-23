@@ -1,0 +1,26 @@
+# ============================================================
+# 白名单式 .gitignore —— 只上传「上传信息.txt」里列出的内容
+# 顶层默认全部忽略，再用 ! 逐个放行。
+# ============================================================
+
+# 1) 顶层默认忽略一切
+/*
+
+# 2) 放行需要上传的内容（与 上传信息.txt 一致）
+!/.gitignore
+!/.gitattributes
+!/static/
+!/app.py
+!/build.py
+!/config-example.yaml
+!/xingce_solver.py
+!/README.md
+!/xingcezhenti-web.exe
+
+# 3) 任意层级都要忽略的临时/生成文件（防止混进题库子目录里）
+__pycache__/
+*.py[cod]
+*$py.class
+.DS_Store
+Thumbs.db
+desktop.ini
