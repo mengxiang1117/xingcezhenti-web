@@ -26,7 +26,7 @@
 
 ## 目录结构
 
-本仓库只上传以下内容（白名单式 `.gitignore`）。题库数据（`01-政治理论` ~ `06-资料分析`）与图片（`90-图片`）打包在 `题目.zip` 中，**另行分发**（不在本仓库，需单独下载解压）：
+本仓库只上传以下内容（白名单式 `.gitignore`）。题库数据（`01-政治理论` ~ `06-资料分析`）与图片（`90-图片`）打包在 `questions.zip` 中，**另行分发**（从 [Releases](https://github.com/mengxiang1117/xingcezhenti-web/releases/tag/v.1.0.0) 下载）：
 
 ```text
 xingcezhenti-web/          # 项目根目录
@@ -47,7 +47,7 @@ xingcezhenti-web/          # 项目根目录
 
 ## 怎么用
 
-0. **先解压题库数据**：解压 `题目.zip`，得到 `01-政治理论` ~ `06-资料分析` 六个模块目录和 `90-图片`（题目图片/公式图）
+0. **先下载并解压题库数据**：从 [Releases](https://github.com/mengxiang1117/xingcezhenti-web/releases/tag/v.1.0.0) 下载 `questions.zip` 并解压，得到 `01-政治理论` ~ `06-资料分析` 六个模块目录和 `90-图片`（题目图片/公式图）
 1. **用 Obsidian 打开**：把本文件夹「打开文件夹作为仓库」，链接与图片可直接点开（推荐）
 2. **用 VS Code / Typora 等**：打开任意 `.md`，用预览模式看（图片是相对路径，一样能显示）
 3. **纯文本查看**：内容都能读，只是图片位置会显示路径
@@ -85,7 +85,7 @@ xingcezhenti-web/          # 项目根目录
    python build.py
    ```
 
-2. 产物在 `dist/xingcezhenti-web.exe`。解压 `题目.zip`（内含 `01-政治理论` ~ `06-资料分析`、`90-图片`），复制 `config-example.yaml` 为 `config.yaml`（需要 AI 解析时填密钥），连同 `static/`、`config.yaml` 一起放到 exe 同级目录后，双击 exe。
+2. 产物在 `dist/xingcezhenti-web.exe`。解压 `questions.zip`（内含 `01-政治理论` ~ `06-资料分析`、`90-图片`，从 [Releases](https://github.com/mengxiang1117/xingcezhenti-web/releases/tag/v.1.0.0) 下载），复制 `config-example.yaml` 为 `config.yaml`（需要 AI 解析时填密钥），连同 `static/`、`config.yaml` 一起放到 exe 同级目录后，双击 exe。
 
 3. 浏览器打开 <http://127.0.0.1:8000>
 
@@ -112,7 +112,7 @@ xingcezhenti-web/          # 项目根目录
 ## 说明
 
 - 每套卷的每个模块一篇笔记，标题是卷名，正文按题目顺序排（资料分析为「材料 → 小题群」结构）
-- 题库数据（`01-政治理论` ~ `06-资料分析`、`90-图片`）已打包为 `题目.zip`，分发时解压该 zip 即可
+- 题库数据（`01-政治理论` ~ `06-资料分析`、`90-图片`）已打包为 `questions.zip`，从 [Releases](https://github.com/mengxiang1117/xingcezhenti-web/releases/tag/v.1.0.0) 下载解压即可
 - 每题标注 `qid`（原始题库 id），可用于回溯到 `tiku.db`
 - 答案取自官方题库，多选/判断等特殊题型的答案以文字形式给出
 - `90-图片/题目图` 是题面图形，`90-图片/公式图` 是官方解析里的公式渲染图
